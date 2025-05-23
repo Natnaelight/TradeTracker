@@ -79,7 +79,8 @@ export default function AddTrade() {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Telegram-Init-Data": window.Telegram.WebApp.initData,
+"X-Telegram-Init-Data": typeof window !== "undefined" ? window.Telegram?.WebApp?.initData || "" : "",
+
       },
       body: JSON.stringify({
         amount: numericAmount,
