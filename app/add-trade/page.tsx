@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Added useEffect
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -58,6 +58,20 @@ export default function AddTrade() {
       note: "",
     },
   });
+
+  // Fixed backButton implementation
+  useEffect(() => {
+    if (backButton && typeof window !== 'undefined' && window.Telegram?.WebApp) {
+      backButton.show();
+      const handleBack = () => router.push("/dashboard");
+      window.Telegram.WebApp.BackButton.onClick(handleBack);
+      
+      return () => {
+        window.Telegram.WebApp.BackButton.offClick(handleBack);
+        backButton.hide();
+      };
+    }
+  }, [backButton, router]);
   
   function onSubmit(values: z.infer<typeof formSchema>) {
     if (!isReady || !telegramUser) {
@@ -113,9 +127,6 @@ export default function AddTrade() {
         setIsSubmitting(false);
       });
   }
-
-  // Setup back button
-  backButton.show(() => router.push("/dashboard"));
 
   return (
     <div className="container max-w-md mx-auto px-4 py-6 space-y-6">

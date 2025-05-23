@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -27,7 +27,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-export const dynamic = 'force-dynamic'; // Add this at the top of the file
 
 const formSchema = z.object({
   amountBirr: z.string().refine(val => !isNaN(parseFloat(val)) && parseFloat(val) > 0, {
@@ -48,7 +47,23 @@ export default function CapitalPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [capital, setCapital] = useState<any>(null);
   
-  // Configure the form
+  useEffect(() => {
+    if (backButton && typeof window !== 'undefined' && window.Telegram?.WebApp) {
+      backButton.show();
+      const handleBack = () => router.push("/dashboard");
+      
+      // Correct way to handle back button click
+      window.Telegram.WebApp.BackButton.onClick(handleBack);
+      
+      return () => {
+        // Correct cleanup
+        window.Telegram.WebApp.BackButton.offClick(handleBack);
+        backButton.hide();
+      };
+    }
+  }, [backButton, router]);
+
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -58,7 +73,6 @@ export default function CapitalPage() {
     },
   });
   
-  // Handle exchange rate calculation
   const handleBirrChange = (value: string) => {
     const birrAmount = parseFloat(value);
     const exchangeRate = parseFloat(form.getValues("exchangeRate"));
@@ -101,14 +115,12 @@ export default function CapitalPage() {
     
     setIsSubmitting(true);
     
-    // Convert string values to numbers
     const numericValues = {
       amountBirr: parseFloat(values.amountBirr),
       amountUsd: parseFloat(values.amountUsd),
       exchangeRate: parseFloat(values.exchangeRate),
     };
     
-    // Make the API request
     fetch("/api/capital", {
       method: "POST",
       headers: {
@@ -118,7 +130,6 @@ export default function CapitalPage() {
             ? window.Telegram.WebApp.initData
             : "",
       },
-      
       body: JSON.stringify(numericValues),
     })
       .then(res => {
@@ -144,9 +155,6 @@ export default function CapitalPage() {
         setIsSubmitting(false);
       });
   }
-
-  // Setup back button
-  backButton.show(() => router.push("/dashboard"));
 
   return (
     <div className="container max-w-md mx-auto px-4 py-6 space-y-6">

@@ -66,7 +66,6 @@ export default function Reports() {
     }
     if (!initData) return;
     
-  
     setIsLoading(true);
   
     fetch(`/api/trades?month=${selectedMonth}&year=${selectedYear}`, {
@@ -93,13 +92,24 @@ export default function Reports() {
       });
   }, [isReady, telegramUser, selectedMonth, selectedYear, toast]);
   
+  // Fixed backButton implementation
+  useEffect(() => {
+    if (backButton && typeof window !== 'undefined' && window.Telegram?.WebApp) {
+      backButton.show();
+      const handleBack = () => router.push("/dashboard");
+      window.Telegram.WebApp.BackButton.onClick(handleBack);
+      
+      return () => {
+        window.Telegram.WebApp.BackButton.offClick(handleBack);
+        backButton.hide();
+      };
+    }
+  }, [backButton, router]);
+  
   // Calculate monthly totals
   const monthlyTotal = trades.reduce((sum, trade) => sum + trade.amount, 0);
   const profitableDays = trades.filter(trade => trade.amount > 0).length;
   const lossDays = trades.filter(trade => trade.amount < 0).length;
-  
-  // Setup back button
-  backButton.show(() => router.push("/dashboard"));
 
   return (
     <div className="container max-w-md mx-auto px-4 py-6 space-y-6">
