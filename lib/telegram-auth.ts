@@ -30,7 +30,8 @@ export function validateTelegramInitData(initDataString: string, botToken: strin
     }
     
     const hash = initData.hash;
-    delete initData.hash;
+    delete (initData as any).hash;
+
     
     // Sort the object by keys and create a data string
     const dataCheckString = Object.keys(initData)
