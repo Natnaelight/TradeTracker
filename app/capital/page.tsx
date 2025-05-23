@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+export const dynamic = 'force-dynamic'; // Add this at the top of the file
 
 const formSchema = z.object({
   amountBirr: z.string().refine(val => !isNaN(parseFloat(val)) && parseFloat(val) > 0, {
