@@ -60,8 +60,12 @@ export default function Reports() {
     if (typeof window === "undefined") return;
   
     // Ensure Telegram WebApp is initialized
-    const initData = window?.Telegram?.WebApp?.initData;
+    let initData;
+    if (typeof window !== "undefined") {
+      initData = window.Telegram?.WebApp?.initData;
+    }
     if (!initData) return;
+    
   
     setIsLoading(true);
   
