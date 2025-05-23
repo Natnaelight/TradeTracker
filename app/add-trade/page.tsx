@@ -105,10 +105,15 @@ export default function AddTrade() {
         note: values.note,
       }),
     })
-      .then(res => {
-        if (!res.ok) throw new Error("Failed to add trade");
-        return res.json();
-      })
+    .then(res => {
+      if (!res.ok) {
+        // Get the full error response
+        return res.text().then(text => {
+          throw new Error(text || 'Failed to add trade');
+        });
+      }
+      return res.json();
+    })
       .then(data => {
         toast({
           title: "Trade added",
