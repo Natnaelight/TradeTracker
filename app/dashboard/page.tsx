@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useTradeStore } from "@/lib/store";
 import { useTelegramWebApp } from "@/hooks/use-telegram-webapp";
 import { Loader2, DollarSign, TrendingUp, Calendar, LineChart } from "lucide-react";
