@@ -55,12 +55,19 @@ export default function Reports() {
   // Fetch trades for the selected month and year
   useEffect(() => {
     if (!isReady || !telegramUser) return;
-    
+  
+    // Ensure code runs only in the browser
+    if (typeof window === "undefined") return;
+  
+    // Ensure Telegram WebApp is initialized
+    const initData = window?.Telegram?.WebApp?.initData;
+    if (!initData) return;
+  
     setIsLoading(true);
-    
+  
     fetch(`/api/trades?month=${selectedMonth}&year=${selectedYear}`, {
       headers: {
-        "X-Telegram-Init-Data": window.Telegram.WebApp.initData,
+        "X-Telegram-Init-Data": initData,
       },
     })
       .then(res => {
@@ -81,7 +88,7 @@ export default function Reports() {
         setIsLoading(false);
       });
   }, [isReady, telegramUser, selectedMonth, selectedYear, toast]);
-
+  
   // Calculate monthly totals
   const monthlyTotal = trades.reduce((sum, trade) => sum + trade.amount, 0);
   const profitableDays = trades.filter(trade => trade.amount > 0).length;

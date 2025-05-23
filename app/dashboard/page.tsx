@@ -21,31 +21,37 @@ export default function Dashboard() {
   
   // Fetch dashboard data
   useEffect(() => {
-    if (isReady && telegramUser) {
-      fetch("/api/dashboard", {
-        headers: {
-          "X-Telegram-Init-Data": window.Telegram.WebApp.initData
-        }
+    if (!isReady || !telegramUser) return;
+  
+    // Ensure we're in the browser before accessing `window`
+    if (typeof window === "undefined") return;
+  
+    const initData = window?.Telegram?.WebApp?.initData;
+    if (!initData) return;
+  
+    fetch("/api/dashboard", {
+      headers: {
+        "X-Telegram-Init-Data": initData
+      }
+    })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to fetch dashboard data");
+        return res.json();
       })
-        .then(res => {
-          if (!res.ok) throw new Error("Failed to fetch dashboard data");
-          return res.json();
-        })
-        .then(data => {
-          setDashboardData(data);
-          setIsLoading(false);
-        })
-        .catch(err => {
-          toast({
-            title: "Error",
-            description: err.message,
-            variant: "destructive"
-          });
-          setIsLoading(false);
+      .then(data => {
+        setDashboardData(data);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        toast({
+          title: "Error",
+          description: err.message,
+          variant: "destructive"
         });
-    }
+        setIsLoading(false);
+      });
   }, [isReady, telegramUser, toast]);
-
+  
   // Loading state
   if (!isReady || isLoading) {
     return (
