@@ -62,7 +62,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="container max-w-md mx-auto px-4 py-6 space-y-6">
+    <div className="container max-w-md mx-auto px-4 py-6 pb-24 space-y-6">
       <header className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Dashboard</h1>
         <span className="text-sm text-muted-foreground">
