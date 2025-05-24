@@ -107,8 +107,12 @@ export default function AddTrade() {
     })
     .then(res => {
       if (!res.ok) {
-        // Get the full error response
         return res.text().then(text => {
+          console.error('❗ API error response:', {
+            status: res.status,
+            statusText: res.statusText,
+            body: text
+          });
           throw new Error(text || 'Failed to add trade');
         });
       }
