@@ -4,7 +4,13 @@ import { z } from 'zod';
 import { extractUserFromInitData, validateTelegramInitData } from '@/lib/telegram-auth';
 export const dynamic = 'force-dynamic';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+    },
+  },
+});
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 
 // Validation schema for new trades
