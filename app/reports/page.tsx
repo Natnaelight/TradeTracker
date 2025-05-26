@@ -112,7 +112,7 @@ export default function Reports() {
   const lossDays = trades.filter(trade => trade.amount < 0).length;
 
   return (
-    <div className="container max-w-md mx-auto px-4 py-6 space-y-6">
+    <div className="container max-w-md mx-auto px-4 py-6 pb-24 space-y-6">
       <header className="flex items-center space-x-2">
         <Button 
           variant="ghost" 
